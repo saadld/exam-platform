@@ -8,6 +8,9 @@ import { TeacherDashboard } from './pages/TeacherDashboard';
 import { CreateExam } from './pages/CreateExam';
 import { GradeExam } from './pages/GradeExam';
 import { TakeExam } from './pages/TakeExam';
+import { StudentExamResult } from './pages/StudentExamResult';
+import { ExamDetails } from './pages/ExamDetails';
+import { EditExam } from './pages/EditExam';
 
 function Router() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -65,6 +68,14 @@ function Router() {
     );
   }
 
+  if (currentPath.startsWith('/result/')) {
+    return (
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentExamResult />
+      </ProtectedRoute>
+    );
+  }
+
   // Routes enseignant
   if (currentPath === '/teacher' || currentPath === '/teacher/') {
     return (
@@ -90,6 +101,24 @@ function Router() {
       </ProtectedRoute>
     );
   }
+  
+  // Routes enseignant - View Exam Details
+if (currentPath.startsWith('/teacher/exams/') && !currentPath.includes('/edit') && !currentPath.includes('/grade')) {
+  return (
+    <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+      <ExamDetails />
+    </ProtectedRoute>
+  );
+}
+
+// Routes enseignant - Edit Exam
+if (currentPath.startsWith('/teacher/exams/') && currentPath.includes('/edit')) {
+  return (
+    <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+      <EditExam />
+    </ProtectedRoute>
+  );
+}
 
   // Page d'accueil (redirection selon le rôle)
   if (currentPath === '/' || currentPath === '') {
@@ -128,6 +157,7 @@ function Router() {
       </div>
     </div>
   );
+  
 }
 
 function App() {
